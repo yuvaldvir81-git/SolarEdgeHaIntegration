@@ -1,0 +1,46 @@
+set_storage_command:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: solaredge_one
+    mode:
+      required: true
+      selector:
+        select:
+          translation_key: storage_command_mode
+          options:
+            - "off"
+            - charge_excess_pv
+            - charge_from_pv_first
+            - charge_from_pv_and_ac
+            - maximize_export
+            - discharge_to_match_load
+            - maximize_self_consumption
+    duration:
+      required: true
+      default: 3600
+      selector:
+        number:
+          min: 60
+          max: 86400
+          step: 60
+          unit_of_measurement: s
+          mode: box
+    charge_limit:
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 50
+          unit_of_measurement: W
+          mode: box
+    discharge_limit:
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 50
+          unit_of_measurement: W
+          mode: box

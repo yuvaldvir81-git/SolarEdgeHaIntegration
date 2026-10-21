@@ -1,0 +1,12 @@
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "PL", "SIM", "UP", "W"]
+ignore = ["E501", "PLR0911", "PLR0913", "PLR0915", "PLR0917", "PLR2004", "PLC0415", "UP047"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+combine-as-imports = true
+known-first-party = ["custom_components"]

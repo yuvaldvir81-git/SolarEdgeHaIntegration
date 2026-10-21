@@ -1,0 +1,14 @@
+{
+  "domain": "solaredge_one",
+  "name": "SolarEdge ONE",
+  "codeowners": ["@yuvaldvir81-git"],
+  "config_flow": true,
+  "dependencies": ["application_credentials"],
+  "documentation": "https://github.com/yuvaldvir81-git/SolarEdgeHaIntegration",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/yuvaldvir81-git/SolarEdgeHaIntegration/issues",
+  "loggers": ["custom_components.solaredge_one", "pymodbus"],
+  "requirements": ["pymodbus>=3.8.0"],
+  "version": "0.1.0"
+}

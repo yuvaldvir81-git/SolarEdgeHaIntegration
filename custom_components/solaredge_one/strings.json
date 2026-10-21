@@ -1,0 +1,232 @@
+{
+  "application_credentials": {
+    "description": "Create a **Site Access** application in the [SolarEdge developer console]({developer_console}) with the SITE_DATA and DEVICE_DATA scopes, and set its redirect URL to `{redirect_url}` (the address your browser uses to reach Home Assistant). Then enter its Client ID and Client Secret here."
+  },
+  "config": {
+    "step": {
+      "pick_implementation": {
+        "title": "Pick authentication method"
+      },
+      "site": {
+        "title": "SolarEdge site",
+        "description": "SolarEdge did not report which site you approved. Enter its Site ID (shown in mySolarEdge and the monitoring portal).",
+        "data": { "site_id": "Site ID" }
+      },
+      "modbus": {
+        "title": "Local Modbus TCP (optional)",
+        "description": "The SolarEdge cloud API is read-only. To see real-time values and control the battery and export limit, enable Modbus TCP on the inverter (SetApp: Site Communication > Modbus TCP, port 1502) and enter its IP address. The inverter accepts only one Modbus client at a time.",
+        "data": {
+          "modbus_enabled": "Connect over Modbus TCP",
+          "modbus_host": "Inverter IP address",
+          "modbus_port": "Port",
+          "modbus_device_id": "Modbus device ID",
+          "modbus_control": "Allow control (battery modes, reserve, export limit)"
+        },
+        "data_description": {
+          "modbus_control": "Writes change how your system charges, discharges and exports. Leave off for read-only monitoring."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in to SolarEdge again",
+        "description": "The SolarEdge grant for this site expired or was revoked."
+      }
+    },
+    "error": {
+      "invalid_auth": "SolarEdge rejected the sign-in.",
+      "site_forbidden": "This grant cannot read that site. Check the Site ID and the approved scopes.",
+      "credit_limit": "The application's monthly API credit limit is used up.",
+      "cannot_connect": "Cannot reach the SolarEdge API.",
+      "modbus_host_required": "Enter the inverter's IP address.",
+      "modbus_cannot_connect": "No SolarEdge inverter answered over Modbus TCP at that address.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This site is already configured.",
+      "reauth_successful": "Signed in again.",
+      "wrong_site": "You approved a different site than the one this entry is for.",
+      "invalid_auth": "SolarEdge rejected the sign-in.",
+      "site_forbidden": "The new grant cannot read this site.",
+      "credit_limit": "The application's monthly API credit limit is used up.",
+      "cannot_connect": "Cannot reach the SolarEdge API.",
+      "unknown": "Unexpected error.",
+      "missing_configuration": "Add SolarEdge application credentials first.",
+      "missing_credentials": "Add SolarEdge application credentials first.",
+      "authorize_url_timeout": "Timeout generating the authorize URL.",
+      "no_url_available": "No URL available.",
+      "oauth_error": "Received invalid token data.",
+      "oauth_timeout": "Timeout resolving the OAuth token.",
+      "oauth_unauthorized": "OAuth authorization error while obtaining an access token.",
+      "oauth_failed": "Error while obtaining an access token.",
+      "user_rejected_authorize": "Sign-in was declined."
+    },
+    "create_entry": {
+      "default": "Successfully authenticated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SolarEdge ONE options",
+        "description": "Free tier: 2,000 cloud calls a month. Each refresh costs 2 calls (5 with device telemetry), plus 4 every 12 hours.",
+        "data": {
+          "scan_interval_minutes": "Cloud refresh interval",
+          "device_telemetry": "Fetch per-device cloud telemetry",
+          "modbus_enabled": "Connect over Modbus TCP",
+          "modbus_host": "Inverter IP address",
+          "modbus_port": "Port",
+          "modbus_device_id": "Modbus device ID",
+          "modbus_control": "Allow control (battery modes, reserve, export limit)",
+          "modbus_scan_seconds": "Modbus refresh interval"
+        }
+      }
+    },
+    "error": {
+      "modbus_host_required": "Enter the inverter's IP address.",
+      "modbus_cannot_connect": "No SolarEdge inverter answered over Modbus TCP at that address."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_power": { "name": "Current power" },
+      "production_today": { "name": "Production today" },
+      "consumption_today": { "name": "Consumption today" },
+      "self_consumption_today": { "name": "Self-consumption today" },
+      "grid_import_today": { "name": "Grid import today" },
+      "grid_export_today": { "name": "Grid export today" },
+      "storage_charge_today": { "name": "Battery charge today" },
+      "storage_discharge_today": { "name": "Battery discharge today" },
+      "lifetime_production": { "name": "Lifetime production" },
+      "open_alerts": { "name": "Open alerts" },
+      "last_update": { "name": "Last cloud update" },
+      "ac_power": { "name": "AC power" },
+      "dc_power": { "name": "DC power" },
+      "ac_energy": { "name": "Lifetime energy" },
+      "ac_voltage": { "name": "AC voltage" },
+      "ac_current": { "name": "AC current" },
+      "ac_frequency": { "name": "AC frequency" },
+      "dc_voltage": { "name": "DC voltage" },
+      "dc_current": { "name": "DC current" },
+      "temperature": { "name": "Temperature" },
+      "inverter_status": {
+        "name": "Status",
+        "state": {
+          "off": "Off",
+          "sleeping": "Sleeping",
+          "starting": "Starting",
+          "producing": "Producing",
+          "throttled": "Throttled",
+          "shutting_down": "Shutting down",
+          "fault": "Fault",
+          "standby": "Standby"
+        }
+      },
+      "grid_power": { "name": "Grid power" },
+      "grid_exported_energy": { "name": "Exported energy" },
+      "grid_imported_energy": { "name": "Imported energy" },
+      "state_of_energy": { "name": "State of charge" },
+      "state_of_health": { "name": "State of health" },
+      "battery_power": { "name": "Battery power" },
+      "available_energy": { "name": "Available energy" },
+      "battery_charged_energy": { "name": "Charged energy" },
+      "battery_discharged_energy": { "name": "Discharged energy" },
+      "battery_voltage": { "name": "Voltage" },
+      "battery_current": { "name": "Current" },
+      "battery_status": {
+        "name": "Status",
+        "state": {
+          "off": "Off",
+          "standby": "Standby",
+          "init": "Initializing",
+          "charging": "Charging",
+          "discharging": "Discharging",
+          "fault": "Fault",
+          "idle": "Idle",
+          "power_saving": "Power saving"
+        }
+      }
+    },
+    "select": {
+      "storage_control_mode": {
+        "name": "Storage control mode",
+        "state": {
+          "disabled": "Disabled",
+          "maximize_self_consumption": "Maximize self-consumption",
+          "time_of_use": "Time of use",
+          "backup_only": "Backup only",
+          "remote_control": "Remote control"
+        }
+      },
+      "ac_charge_policy": {
+        "name": "AC charge policy",
+        "state": {
+          "disabled": "Disabled",
+          "always_allowed": "Always allowed",
+          "fixed_energy_limit": "Fixed energy limit",
+          "percent_of_production": "Percent of production"
+        }
+      },
+      "default_command_mode": {
+        "name": "Default storage command",
+        "state": {
+          "off": "Off",
+          "charge_excess_pv": "Charge from excess PV only",
+          "charge_from_pv_first": "Charge from PV first",
+          "charge_from_pv_and_ac": "Charge from PV and grid",
+          "maximize_export": "Maximize export",
+          "discharge_to_match_load": "Discharge to match load",
+          "maximize_self_consumption": "Maximize self-consumption"
+        }
+      },
+      "remote_command_mode": {
+        "name": "Remote storage command",
+        "state": {
+          "off": "Off",
+          "charge_excess_pv": "Charge from excess PV only",
+          "charge_from_pv_first": "Charge from PV first",
+          "charge_from_pv_and_ac": "Charge from PV and grid",
+          "maximize_export": "Maximize export",
+          "discharge_to_match_load": "Discharge to match load",
+          "maximize_self_consumption": "Maximize self-consumption"
+        }
+      }
+    },
+    "number": {
+      "backup_reserve": { "name": "Backup reserve" },
+      "remote_charge_limit": { "name": "Remote charge limit" },
+      "remote_discharge_limit": { "name": "Remote discharge limit" },
+      "remote_command_timeout": { "name": "Remote command timeout" },
+      "ac_charge_limit": { "name": "AC charge limit" },
+      "export_limit": { "name": "Export limit" }
+    }
+  },
+  "selector": {
+    "storage_command_mode": {
+      "options": {
+        "off": "Off",
+        "charge_excess_pv": "Charge from excess PV only",
+        "charge_from_pv_first": "Charge from PV first",
+        "charge_from_pv_and_ac": "Charge from PV and grid",
+        "maximize_export": "Maximize export",
+        "discharge_to_match_load": "Discharge to match load",
+        "maximize_self_consumption": "Maximize self-consumption"
+      }
+    }
+  },
+  "services": {
+    "set_storage_command": {
+      "name": "Set storage command",
+      "description": "Switch the battery to remote control and run a charge or discharge command for a limited time. Afterwards the inverter returns to its default storage command.",
+      "fields": {
+        "config_entry_id": { "name": "Site", "description": "The SolarEdge ONE entry to control." },
+        "mode": { "name": "Command", "description": "What the battery should do." },
+        "duration": { "name": "Duration", "description": "How long the command lasts." },
+        "charge_limit": { "name": "Charge limit", "description": "Maximum charge power." },
+        "discharge_limit": { "name": "Discharge limit", "description": "Maximum discharge power." }
+      }
+    }
+  },
+  "exceptions": {
+    "entry_not_loaded": { "message": "That SolarEdge ONE entry is not loaded." },
+    "control_unavailable": { "message": "Control needs Modbus enabled with control allowed and a battery detected." }
+  }
+}
