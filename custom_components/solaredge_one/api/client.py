@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Callable, Sequence
-from datetime import datetime
+from datetime import UTC, datetime
 from http import HTTPStatus
 from typing import Any
 
@@ -132,12 +132,16 @@ class SolarEdgeClient:
         return parse_telemetry(body, kind)
 
 
+def _instant(value: datetime) -> str:
+    """The API parses `from`/`to` as an Instant: UTC with a `Z` suffix."""
+    if value.tzinfo is None:
+        raise ValueError("Time window bounds must be timezone-aware")
+    return value.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def _window(start: datetime, end: datetime) -> list[tuple[str, str]]:
-    """Site-local, offset-free timestamps, as the API expects."""
-    return [
-        ("from", start.strftime("%Y-%m-%dT%H:%M:%S")),
-        ("to", end.strftime("%Y-%m-%dT%H:%M:%S")),
-    ]
+    """`from`/`to` query parameters for a window."""
+    return [("from", _instant(start)), ("to", _instant(end))]
 
 
 async def _error_for(response: ClientResponse) -> SolarEdgeResponseError:

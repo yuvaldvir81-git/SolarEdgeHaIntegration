@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
 import logging
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -76,15 +76,14 @@ class CloudCoordinator(DataUpdateCoordinator[CloudData]):
         self.site_device_id: str | None = None  # set once the site device is registered
         self._slow_at: datetime | None = None
 
-    def _site_now(self, data: CloudData | None) -> datetime:
-        """Now in the site's time zone, which the API's date parameters use."""
-        tz = None
-        if data is not None and data.site.timezone:
+    def _site_tz(self, data: CloudData) -> tzinfo:
+        """The site's time zone; "today" (midnight) is measured in it."""
+        if data.site.timezone:
             try:
-                tz = ZoneInfo(data.site.timezone)
+                return ZoneInfo(data.site.timezone)
             except ZoneInfoNotFoundError:
-                tz = None
-        return dt_util.now(tz or dt_util.get_default_time_zone()).replace(tzinfo=None)
+                pass
+        return dt_util.get_default_time_zone()
 
     async def _async_update_data(self) -> CloudData:
         try:
@@ -106,9 +105,10 @@ class CloudCoordinator(DataUpdateCoordinator[CloudData]):
 
         if slow_due:
             data = CloudData(site=await self.client.async_get_site(sid))
-            now = self._site_now(data)
-            if data.site.installation_date is not None:
-                start = data.site.installation_date.replace(tzinfo=None)
+            now = dt_util.now(self._site_tz(data))
+            if (start := data.site.installation_date) is not None:
+                if start.tzinfo is None:
+                    start = start.replace(tzinfo=now.tzinfo)
                 data.lifetime_energy = await self.client.async_get_lifetime_energy(sid, start, now)
             data.devices = await self.client.async_get_devices(sid)
             data.alerts = await self.client.async_get_open_alerts(sid)
@@ -120,7 +120,7 @@ class CloudCoordinator(DataUpdateCoordinator[CloudData]):
                 lifetime_energy=previous.lifetime_energy,
                 alerts=previous.alerts,
             )
-            now = self._site_now(data)
+            now = dt_util.now(self._site_tz(data))
 
         data.overview = await self.client.async_get_overview(sid)
         data.power = await self.client.async_get_power(sid, now - timedelta(hours=1), now)

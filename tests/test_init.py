@@ -52,6 +52,11 @@ async def test_cloud_only(hass: HomeAssistant, aioclient_mock: AiohttpClientMock
     assert not hass.states.async_entity_ids("select")
     assert not hass.states.async_entity_ids("number")
 
+    # Window bounds are Instants (UTC, Z suffix); the API rejects offset-free times.
+    energy_url = next(c[1] for c in aioclient_mock.mock_calls if c[1].path.endswith("/energy"))
+    assert energy_url.query["from"] == "2022-02-28T22:00:00Z"
+    assert energy_url.query["to"].endswith("Z")
+
     # Requests carry the bearer token, never a query-string key.
     for _, url, _, headers in aioclient_mock.mock_calls:
         assert "api_key" not in str(url)
